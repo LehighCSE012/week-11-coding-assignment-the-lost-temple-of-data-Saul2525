@@ -6,6 +6,7 @@
 """
 
 import re
+from datetime import datetime
 import pandas as pd
 
 def load_artifact_data(excel_filepath: str) -> pd.DataFrame:
@@ -45,7 +46,14 @@ def extract_journal_dates(journal_text: str) -> list:
     Returns:
         list[str]: A list of date strings found in the text.
     """
-    journal = re.findall(r"\d{2}/\d{2}/\d{4}", journal_text)
+    raw_journal = re.findall(r"\d{2}/\d{2}/\d{4}", journal_text)
+    journal = []
+    for date in raw_journal:
+        try:
+            datetime.strptime(date, "%m/%d/%Y")
+            journal.append(date)
+        except ValueError:
+            pass
     return journal
 
 def extract_secret_codes(journal_text: str) -> list:
